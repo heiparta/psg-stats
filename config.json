@@ -1,0 +1,9 @@
+{
+  "server": {
+      "name": "psg-stats",
+      "port": 8080
+  },
+  "log": {
+    "level": "DEBUG"
+  }
+}
