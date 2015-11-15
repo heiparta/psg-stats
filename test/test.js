@@ -108,9 +108,24 @@ describe.only("Games", function () {
       .catch(done);
   });
 
-  it('should update game', function (done) {
-    var updatedGame = testGame;
+  it('should get game', function (done) {
     assert(gameId);
+    client.getAsync('/game/' + gameId)
+      .then(function (result) {
+        var req = result[0],
+          res = result[1],
+          obj = result[2];
+        obj.code.should.equal('success');
+        obj.game.id.should.equal(gameId);
+        obj.game.goalsAway.should.equal(testGame.goalsAway);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should update game', function (done) {
+    assert(gameId);
+    var updatedGame = testGame;
     updatedGame.game = gameId;
     updatedGame.goalsAway = 0;
 
@@ -121,6 +136,14 @@ describe.only("Games", function () {
           obj = result[2];
         obj.code.should.equal('success');
         obj.game.should.equal(gameId);
+        return client.getAsync('/game/' + gameId);
+      })
+      .then(function (result) {
+        // Updated game should have correct data
+        var req = result[0],
+          res = result[1],
+          obj = result[2];
+        obj.game.goalsAway.should.equal(0);
         done();
       })
       .catch(done);
