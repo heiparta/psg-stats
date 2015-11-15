@@ -92,7 +92,7 @@ describe.only("Games", function () {
       .then(function () {
         var promises = [];
         _.forEach(TESTPLAYERS, function (name) {
-          promises.push(client.postAsync('/player', {name: name}));
+          promises.push(client.postAsync('/player', {name: name, series: TESTSERIES}));
         });
         return Promise.all(promises);
       })
@@ -154,7 +154,8 @@ describe.only("Games", function () {
           res = result[1],
           obj = result[2];
         obj.game.goalsAway.should.equal(0);
-        obj.game.playersAway[1].should.equal('foo');
+        obj.game.playersAway.should.be.instanceof(Array).and.have.lengthOf(2);
+        _.difference(obj.game.playersAway, ["foo", "baz"]).should.have.lengthOf(0);
         obj.game.series.should.equal(TESTSERIES);
         obj.game.winners.should.be.instanceof(Array).and.have.lengthOf(1);
         obj.game.winners[0].should.equal('bar');
