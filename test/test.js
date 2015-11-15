@@ -156,6 +156,8 @@ describe.only("Games", function () {
         obj.game.goalsAway.should.equal(0);
         obj.game.playersAway[1].should.equal('foo');
         obj.game.series.should.equal(TESTSERIES);
+        obj.game.winners.should.be.instanceof(Array).and.have.lengthOf(1);
+        obj.game.winners[0].should.equal('bar');
         done();
       })
       .catch(done);
