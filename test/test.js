@@ -77,7 +77,7 @@ describe('CRUD', function() {
   });
 });
 
-describe.only("Games", function () {
+describe("Games", function () {
   var testGame = {
     series: TESTSERIES,
     teamAway: "VAN",
