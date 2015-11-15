@@ -4,6 +4,7 @@ var fs = require('fs');
 var Promise = require('bluebird');
 var restify = require('restify');
 var should = require('should');
+var _ = require('lodash');
 
 var app = require('../app');
 var config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
@@ -13,7 +14,7 @@ var client = restify.createJsonClient({
 });
 Promise.promisifyAll(client);
 
-var TESTPLAYERS = ["foo", "bar"];
+var TESTPLAYERS = ["foo", "bar", "baz"];
 var TESTSERIES = "testseries";
 
 before(function (done) {
@@ -87,12 +88,18 @@ describe.only("Games", function () {
   var gameId;
 
   before(function (done) {
-    client.postAsync('/series', {name: TESTSERIES}, function(err, req, res, obj) {
-      assert.ifError(err);
-      obj.code.should.equal('success');
-      done();
-    })
-    .catch(done);
+    client.postAsync('/series', {name: TESTSERIES})
+      .then(function () {
+        var promises = [];
+        _.forEach(TESTPLAYERS, function (name) {
+          promises.push(client.postAsync('/player', {name: name}));
+        });
+        return Promise.all(promises);
+      })
+      .then(function () {
+        done();
+      })
+      .catch(done);
   });
 
   it('should create game', function (done) {
@@ -118,6 +125,7 @@ describe.only("Games", function () {
         obj.code.should.equal('success');
         obj.game.id.should.equal(gameId);
         obj.game.goalsAway.should.equal(testGame.goalsAway);
+        obj.game.series.should.equal(TESTSERIES);
         done();
       })
       .catch(done);
@@ -128,6 +136,8 @@ describe.only("Games", function () {
     var updatedGame = testGame;
     updatedGame.game = gameId;
     updatedGame.goalsAway = 0;
+    updatedGame.playersAway = "foo,baz";
+    updatedGame.playersHome = "bar";
 
     client.postAsync('/game', updatedGame)
       .then(function (result) {
@@ -144,6 +154,8 @@ describe.only("Games", function () {
           res = result[1],
           obj = result[2];
         obj.game.goalsAway.should.equal(0);
+        obj.game.playersAway[1].should.equal('foo');
+        obj.game.series.should.equal(TESTSERIES);
         done();
       })
       .catch(done);

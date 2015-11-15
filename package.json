@@ -29,7 +29,7 @@
   "license": "MIT",
   "main": "./app.js",
   "scripts": {
-    "test": "mocha test/*.js --reporter spec",
+    "test": "mocha -b test/*.js --reporter spec",
     "start": "node ./psg-stats.js"
   }
 }
