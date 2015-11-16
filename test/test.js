@@ -49,6 +49,18 @@ describe('CRUD', function() {
     .catch(done);
   });
 
+  it('should get player', function(done) {
+    client.getAsync('/player/' + TESTPLAYERS[0])
+      .then(function (result) {
+        var obj = result[2];
+        obj.code.should.equal('success');
+        obj.player.name.should.equal(TESTPLAYERS[0]);
+        obj.stats.numberOfGames.should.equal(0);
+        done();
+      })
+      .catch(done);
+  });
+
   it('should create series', function(done) {
     client.postAsync('/series', {name: TESTSERIES}, function(err, req, res, obj) {
       assert.ifError(err);
@@ -84,6 +96,8 @@ describe("Games", function () {
     teamHome: "MTL",
     goalsAway: 42,
     goalsHome: 1,
+    playersAway: "foo,baz",
+    playersHome: "bar",
   };
   var gameId;
 
@@ -136,8 +150,6 @@ describe("Games", function () {
     var updatedGame = testGame;
     updatedGame.game = gameId;
     updatedGame.goalsAway = 0;
-    updatedGame.playersAway = "foo,baz";
-    updatedGame.playersHome = "bar";
 
     client.postAsync('/game', updatedGame)
       .then(function (result) {
@@ -159,6 +171,19 @@ describe("Games", function () {
         obj.game.series.should.equal(TESTSERIES);
         obj.game.winners.should.be.instanceof(Array).and.have.lengthOf(1);
         obj.game.winners[0].should.equal('bar');
+        done();
+      })
+      .catch(done);
+  });
+
+  it('player should have updated stats', function(done) {
+    client.getAsync('/player/' + TESTPLAYERS[1])
+      .then(function (result) {
+        var obj = result[2];
+        obj.code.should.equal('success');
+        obj.player.name.should.equal(TESTPLAYERS[1]);
+        obj.stats.numberOfGames.should.equal(1);
+        obj.stats.numberOfWins.should.equal(1);
         done();
       })
       .catch(done);
