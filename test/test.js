@@ -56,6 +56,7 @@ describe('CRUD', function() {
         obj.code.should.equal('success');
         obj.player.name.should.equal(TESTPLAYERS[0]);
         obj.stats.numberOfGames.should.equal(0);
+        obj.stats.currentStreak.should.equal(0);
         done();
       })
       .catch(done);
@@ -184,6 +185,7 @@ describe("Games", function () {
         obj.player.name.should.equal(TESTPLAYERS[1]);
         obj.stats.numberOfGames.should.equal(1);
         obj.stats.numberOfWins.should.equal(1);
+        obj.stats.currentStreak.should.equal(1);
         done();
       })
       .catch(done);
