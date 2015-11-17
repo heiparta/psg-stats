@@ -55,6 +55,7 @@ describe('CRUD', function() {
         var obj = result[2];
         obj.code.should.equal('success');
         obj.player.name.should.equal(TESTPLAYERS[0]);
+        obj.player.series.should.be.instanceof(Array).and.have.lengthOf(0);
         obj.stats.numberOfGames.should.equal(0);
         obj.stats.currentStreak.should.equal(0);
         done();
@@ -75,7 +76,8 @@ describe('CRUD', function() {
     client.postAsync('/player', {name: TESTPLAYERS[1], series: TESTSERIES}, function(err, req, res, obj) {
       assert.ifError(err);
       obj.code.should.equal('success');
-      obj.series.should.equal(TESTSERIES);
+      obj.player.series.should.be.instanceof(Array).and.have.length(1);
+      obj.player.series[0].should.equal(TESTSERIES);
       done();
     })
     .catch(done);
