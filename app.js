@@ -6,7 +6,7 @@ var fs = require('fs');
 
 var config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 var log = bunyan.createLogger({
-  name: 'node-skeleton',
+  name: config.server.name,
   stream: process.stdout,
   level: config.log.level
 });

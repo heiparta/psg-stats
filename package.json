@@ -30,6 +30,6 @@
   "main": "./app.js",
   "scripts": {
     "test": "mocha -b test/*.js --reporter spec",
-    "start": "node ./psg-stats.js"
+    "start": "node ./app.js"
   }
 }
