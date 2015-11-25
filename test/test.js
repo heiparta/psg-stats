@@ -192,4 +192,22 @@ describe("Games", function () {
       })
       .catch(done);
   });
+
+  it('should get series', function(done) {
+    client.getAsync('/series/' +  TESTSERIES, function(err, req, res, obj) {
+      assert.ifError(err);
+      obj.code.should.equal('success');
+      obj.series.name.should.equal(TESTSERIES);
+      obj.series.players.should.be.instanceof(Array).and.have.length(3);
+      var findPlayer = function (players, name) {
+        return _.find(obj.series.players, function (p) {
+          return p.name === name;
+        });
+      };
+      findPlayer(obj.series.players, "foo").stats.numberOfWins.should.equal(0);
+      findPlayer(obj.series.players, "bar").stats.numberOfWins.should.equal(1);
+      done();
+    })
+    .catch(done);
+  });
 });
