@@ -72,6 +72,18 @@ describe('CRUD', function() {
     .catch(done);
   });
 
+  it('should list series', function(done) {
+    client.getAsync('/series', function(err, req, res, obj) {
+      assert.ifError(err);
+      obj.code.should.equal('success');
+      obj.series.should.be.instanceof(Array);
+      obj.series.length.should.be.aboveOrEqual(1);
+      obj.series.should.containEql(TESTSERIES);
+      done();
+    })
+    .catch(done);
+  });
+
   it('should add player to series', function(done) {
     client.postAsync('/player', {name: TESTPLAYERS[1], series: TESTSERIES}, function(err, req, res, obj) {
       assert.ifError(err);
