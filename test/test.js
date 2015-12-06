@@ -1,3 +1,5 @@
+/*jslint node: true */
+"use strict";
 var assert = require("assert");
 var expect = require("chai").expect;
 var fs = require('fs');
@@ -41,7 +43,7 @@ describe('Server', function() {
 
 describe('CRUD', function() {
   it('should create player', function(done) {
-    client.postAsync('/player', {name: TESTPLAYERS[0]}, function(err, req, res, obj) {
+    client.postAsync('/player', {name: TESTPLAYERS[0], password: '53cr37' * 2}, function(err, req, res, obj) {
       assert.ifError(err);
       obj.code.should.equal('success');
       done();

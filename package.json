@@ -8,6 +8,7 @@
     "url": "https://github.com/heiparta/psg-stats.git"
   },
   "dependencies": {
+    "bcrypt": "^0.8.5",
     "bluebird": "^2.9.32",
     "bunyan": "^1.4.0",
     "lodash": "^3.10.0",
@@ -29,7 +30,7 @@
   "license": "MIT",
   "main": "./app.js",
   "scripts": {
-    "test": "mocha -b test/*.js --reporter spec",
+    "test": "./node_modules/.bin/mocha",
     "start": "node ./app.js"
   }
 }
