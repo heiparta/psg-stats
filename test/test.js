@@ -1,4 +1,5 @@
 /*jslint node: true */
+/* global before, describe, it */
 "use strict";
 var assert = require("assert");
 var expect = require("chai").expect;
