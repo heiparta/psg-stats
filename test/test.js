@@ -1,5 +1,5 @@
-/*jslint node: true */
-/* global before, describe, it */
+/*jslint node: true, expr: true */
+/* global before, after, describe, it */
 "use strict";
 var assert = require("assert");
 var expect = require("chai").expect;
@@ -18,15 +18,38 @@ var client = restify.createJsonClient({
 Promise.promisifyAll(client);
 
 var TESTPLAYERS = ["foo", "bar", "baz"];
+var FOO_PASS = "s3cr37";
 var TESTSERIES = "testseries";
+
+var adminToken;
+var tokenToUse;
+
+client.sendRequest = function () {
+  var args = Array.prototype.slice.call(arguments);
+  var method = args.shift();
+  var path = args.shift();
+  var methods = {GET: this.getAsync, POST: this.postAsync, DELETE: this.deleteAsync};
+  var options = {
+    path: path
+  };
+  if (!_.isEmpty(tokenToUse)) {
+    _.assign(options, {headers: {"x-authentication": "PSGToken " + tokenToUse}});
+  }
+  args.unshift(options);
+  return methods[method].apply(client, args);
+};
 
 before(function (done) {
   client.delAsync('/series/' + TESTSERIES)
     .then(function () {
-      client.delAsync('/player/' + TESTPLAYERS[1])
-        .then(function () {
+      return client.delAsync('/player/' + TESTPLAYERS[1]);
+    })
+    .then(function () {
+      client.sendRequest("POST", '/player/token', {name: "foo", password: FOO_PASS}, function(err, req, res, obj) {
+          adminToken = obj.token;
+          tokenToUse = adminToken;
           done();
-        });
+      });
     })
     .catch(done);
 });
@@ -44,7 +67,7 @@ describe('Server', function() {
 
 describe('CRUD', function() {
   it('should create player', function(done) {
-    client.postAsync('/player', {name: TESTPLAYERS[0], password: '53cr37' * 2}, function(err, req, res, obj) {
+    client.sendRequest('POST', '/player', {name: TESTPLAYERS[0], password: '53cr37' * 2}, function(err, req, res, obj) {
       assert.ifError(err);
       obj.code.should.equal('success');
       done();
@@ -88,7 +111,7 @@ describe('CRUD', function() {
   });
 
   it('should add player to series', function(done) {
-    client.postAsync('/player', {name: TESTPLAYERS[1], series: TESTSERIES}, function(err, req, res, obj) {
+    client.sendRequest('POST', '/player', {name: TESTPLAYERS[1], series: TESTSERIES}, function(err, req, res, obj) {
       assert.ifError(err);
       obj.code.should.equal('success');
       obj.player.series.should.be.instanceof(Array).and.have.length(1);
@@ -99,8 +122,61 @@ describe('CRUD', function() {
   });
 
   it('should fail adding player if series is missing', function(done) {
-    client.postAsync('/player', {name: TESTPLAYERS[1], series: "notfound"}, function(err, req, res, obj) {
+    client.sendRequest('POST', '/player', {name: TESTPLAYERS[1], series: "notfound"}, function(err, req, res, obj) {
       res.statusCode.should.equal(404);
+      done();
+    })
+    .catch(done);
+  });
+});
+
+describe("Authentication", function () {
+
+  before(function (done) {
+    tokenToUse = null;
+    done();
+  });
+
+  after(function (done) {
+    tokenToUse = adminToken;
+    done();
+  });
+
+  it('should create token', function(done) {
+    client.sendRequest("POST", '/player/token', {name: "foo", password: FOO_PASS}, function(err, req, res, obj) {
+      res.statusCode.should.equal(200);
+      obj.code.should.equal('success');
+      obj.token.should.be.ok;
+      adminToken = obj.token;
+      done();
+    })
+    .catch(done);
+  });
+
+  it('should succeed allowed operations without token', function(done) {
+    client.sendRequest('GET', '/player/foo', function(err, req, res, obj) {
+      res.statusCode.should.equal(200);
+      obj.code.should.equal('success');
+      obj.player.name.should.be.ok;
+      done();
+    })
+    .catch(done);
+  });
+
+  it('should fail admin operations without token', function(done) {
+    client.sendRequest('POST', '/player', {name: "notAllowed"}, function(err, req, res, obj) {
+      res.statusCode.should.equal(403);
+      obj.code.should.equal('ForbiddenError');
+      done();
+    })
+    .catch(done);
+  });
+
+  it('should succeed admin operations', function(done) {
+    tokenToUse = adminToken;
+    client.sendRequest('POST', '/player', {name: "adminCreatedMe"}, function(err, req, res, obj) {
+      res.statusCode.should.equal(200);
+      obj.code.should.equal('success');
       done();
     })
     .catch(done);
@@ -120,11 +196,12 @@ describe("Games", function () {
   var gameId;
 
   before(function (done) {
+
     client.postAsync('/series', {name: TESTSERIES})
       .then(function () {
         var promises = [];
         _.forEach(TESTPLAYERS, function (name) {
-          promises.push(client.postAsync('/player', {name: name, series: TESTSERIES}));
+          promises.push(client.sendRequest('POST', '/player', {name: name, series: TESTSERIES}));
         });
         return Promise.all(promises);
       })

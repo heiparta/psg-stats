@@ -9,8 +9,9 @@
         "role": "admin"
       },
       {
-        "name": "Heikki",
-        "password": "foobar001"
+        "name": "foo",
+        "password": "s3cr37",
+        "role": "admin"
       }
     ]
   },
