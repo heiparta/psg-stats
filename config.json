@@ -1,7 +1,18 @@
 {
   "server": {
-      "name": "psg-stats",
-      "port": 8080
+    "name": "psg-stats",
+    "port": 8080,
+    "credentials": [
+      {
+        "name": "admin",
+        "password": "jalgjlaegjioaegjlegjaegkjegieag",
+        "role": "admin"
+      },
+      {
+        "name": "Heikki",
+        "password": "foobar001"
+      }
+    ]
   },
   "log": {
     "level": "DEBUG"
