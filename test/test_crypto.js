@@ -6,6 +6,7 @@ var expect = require("chai").expect;
 var fs = require('fs');
 var mongoose = require('mongoose');
 var Promise = require('bluebird');
+var restify = require('restify');
 var should = require('should');
 var _ = require('lodash');
 
@@ -39,6 +40,17 @@ describe('Crypto', function() {
     crypto.validateUser(user, PASS)
       .then(function (result) {
         result.user.should.equal(user.id);
+        done();
+      })
+      .catch(done);
+  });
+
+  it('should not validate with wrong pass', function(done) {
+    crypto.validateUser(user, 'incorrect')
+      .then(function (result) {
+        done(new Error("Should have failed"));
+      })
+      .catch(restify.ForbiddenError, function () {
         done();
       })
       .catch(done);
