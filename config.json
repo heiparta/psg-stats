@@ -7,11 +7,6 @@
         "name": "admin",
         "password": "jalgjlaegjioaegjlegjaegkjegieag",
         "role": "admin"
-      },
-      {
-        "name": "foo",
-        "password": "s3cr37",
-        "role": "admin"
       }
     ]
   },

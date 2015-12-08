@@ -9,6 +9,8 @@ var restify = require('restify');
 var should = require('should');
 var _ = require('lodash');
 
+var config = require('../lib/config');
+config.server.port = 9090;
 var app = require('../app');
 var config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 var client = restify.createJsonClient({
@@ -18,8 +20,9 @@ var client = restify.createJsonClient({
 Promise.promisifyAll(client);
 
 var TESTPLAYERS = ["foo", "bar", "baz"];
-var FOO_PASS = "s3cr37";
 var TESTSERIES = "testseries";
+
+var adminPassword = config.server.credentials[0].password;
 
 var adminToken;
 var tokenToUse;
@@ -45,7 +48,7 @@ before(function (done) {
       return client.delAsync('/player/' + TESTPLAYERS[1]);
     })
     .then(function () {
-      client.sendRequest("POST", '/player/token', {name: "foo", password: FOO_PASS}, function(err, req, res, obj) {
+      client.sendRequest("POST", '/player/token', {name: "admin", password: adminPassword}, function(err, req, res, obj) {
           adminToken = obj.token;
           tokenToUse = adminToken;
           done();
@@ -143,7 +146,7 @@ describe("Authentication", function () {
   });
 
   it('should create token', function(done) {
-    client.sendRequest("POST", '/player/token', {name: "foo", password: FOO_PASS}, function(err, req, res, obj) {
+    client.sendRequest("POST", '/player/token', {name: "foo", password: adminPassword}, function(err, req, res, obj) {
       res.statusCode.should.equal(200);
       obj.code.should.equal('success');
       obj.token.should.be.ok;
