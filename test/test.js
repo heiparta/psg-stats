@@ -12,7 +12,6 @@ var _ = require('lodash');
 var config = require('../lib/config');
 config.server.port = 9090;
 var app = require('../app');
-var config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
 var client = restify.createJsonClient({
   'url': 'http://127.0.0.1::' + config.server.port,
   'version': '*'
