@@ -2,14 +2,8 @@
 "use strict";
 
 var bunyan = require('bunyan');
-var fs = require('fs');
+var config = require('./lib/config');
 
-var configFile = './config.json';
-if (process.argv.length > 2) {
-  configFile = process.argv[2];
-}
-
-var config = JSON.parse(fs.readFileSync(configFile, 'utf-8'));
 var log = bunyan.createLogger({
   name: config.server.name,
   stream: process.stdout,
