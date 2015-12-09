@@ -145,7 +145,7 @@ describe("Authentication", function () {
   });
 
   it('should create token', function(done) {
-    client.sendRequest("POST", '/player/token', {name: "foo", password: adminPassword}, function(err, req, res, obj) {
+    client.sendRequest("POST", '/player/token', {name: "admin", password: adminPassword}, function(err, req, res, obj) {
       res.statusCode.should.equal(200);
       obj.code.should.equal('success');
       obj.token.should.be.ok;
@@ -160,6 +160,16 @@ describe("Authentication", function () {
       res.statusCode.should.equal(200);
       obj.code.should.equal('success');
       obj.player.name.should.be.ok;
+      done();
+    })
+    .catch(done);
+  });
+
+  it('should fail operations with invalid token', function(done) {
+    tokenToUse = "invalidtoken";
+    client.sendRequest('POST', '/player', {name: "notAllowed"}, function(err, req, res, obj) {
+      res.statusCode.should.equal(403);
+      obj.code.should.equal('ForbiddenError');
       done();
     })
     .catch(done);
