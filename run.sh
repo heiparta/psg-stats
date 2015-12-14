@@ -1,3 +1,4 @@
 #!/bin/bash
 source ~/.nvm/nvm.sh
-node app.js elsa.json >> /var/log/psg/api.log 2>&1
+export PSG_APP_CONFIG="elsa.json"
+node app.js >> /var/log/psg/api.log 2>&1
