@@ -18,7 +18,7 @@ var client = restify.createJsonClient({
 });
 Promise.promisifyAll(client);
 
-var TESTPLAYERS = ["foo", "bar", "baz"];
+var TESTPLAYERS = ["Foo", "Bar", "Baz"];
 var TESTSERIES = "testseries";
 
 var adminPassword = config.server.credentials[0].password;
@@ -113,7 +113,7 @@ describe('CRUD', function() {
   });
 
   it('should add player to series', function(done) {
-    client.sendRequest('POST', '/player', {name: TESTPLAYERS[1], series: TESTSERIES}, function(err, req, res, obj) {
+    client.sendRequest('POST', '/player', {name: TESTPLAYERS[0].replace("o", "O"), series: TESTSERIES}, function(err, req, res, obj) {
       assert.ifError(err);
       obj.code.should.equal('success');
       obj.player.series.should.be.instanceof(Array).and.have.length(1);
@@ -274,10 +274,10 @@ describe("Games", function () {
           obj = result[2];
         obj.game.goalsAway.should.equal(0);
         obj.game.playersAway.should.be.instanceof(Array).and.have.lengthOf(2);
-        _.difference(obj.game.playersAway, ["foo", "baz"]).should.have.lengthOf(0);
+        _.difference(obj.game.playersAway, ["Foo", "Baz"]).should.have.lengthOf(0);
         obj.game.series.should.equal(TESTSERIES);
         obj.game.winners.should.be.instanceof(Array).and.have.lengthOf(1);
-        obj.game.winners[0].should.equal('bar');
+        obj.game.winners[0].should.equal('Bar');
         done();
       })
       .catch(done);
@@ -308,8 +308,8 @@ describe("Games", function () {
           return p.name === name;
         });
       };
-      findPlayer(obj.series.players, "foo").stats.numberOfWins.should.equal(0);
-      findPlayer(obj.series.players, "bar").stats.numberOfWins.should.equal(1);
+      findPlayer(obj.series.players, "Foo").stats.numberOfWins.should.equal(0);
+      findPlayer(obj.series.players, "Bar").stats.numberOfWins.should.equal(1);
       done();
     })
     .catch(done);
