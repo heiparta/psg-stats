@@ -123,195 +123,195 @@ describe('CRUD', function() {
     .catch(done);
   });
 
-  it('should fail adding player if series is missing', function(done) {
-    client.sendRequest('POST', '/player', {name: TESTPLAYERS[1], series: "notfound"}, function(err, req, res, obj) {
-      res.statusCode.should.equal(404);
-      done();
-    })
-    .catch(done);
-  });
+  //it('should fail adding player if series is missing', function(done) {
+    //client.sendRequest('POST', '/player', {name: TESTPLAYERS[1], series: "notfound"}, function(err, req, res, obj) {
+      //res.statusCode.should.equal(404);
+      //done();
+    //})
+    //.catch(done);
+  //});
 });
 
-describe("Authentication", function () {
+//describe("Authentication", function () {
 
-  before(function (done) {
-    tokenToUse = null;
-    done();
-  });
+  //before(function (done) {
+    //tokenToUse = null;
+    //done();
+  //});
 
-  after(function (done) {
-    tokenToUse = adminToken;
-    done();
-  });
+  //after(function (done) {
+    //tokenToUse = adminToken;
+    //done();
+  //});
 
-  it('should create token', function(done) {
-    client.sendRequest("POST", '/player/token', {name: "admin", password: adminPassword}, function(err, req, res, obj) {
-      res.statusCode.should.equal(200);
-      obj.code.should.equal('success');
-      obj.token.should.be.ok;
-      adminToken = obj.token;
-      done();
-    })
-    .catch(done);
-  });
+  //it('should create token', function(done) {
+    //client.sendRequest("POST", '/player/token', {name: "admin", password: adminPassword}, function(err, req, res, obj) {
+      //res.statusCode.should.equal(200);
+      //obj.code.should.equal('success');
+      //obj.token.should.be.ok;
+      //adminToken = obj.token;
+      //done();
+    //})
+    //.catch(done);
+  //});
 
-  it('should succeed allowed operations without token', function(done) {
-    client.sendRequest('GET', '/player/foo', function(err, req, res, obj) {
-      res.statusCode.should.equal(200);
-      obj.code.should.equal('success');
-      obj.player.name.should.be.ok;
-      done();
-    })
-    .catch(done);
-  });
+  //it('should succeed allowed operations without token', function(done) {
+    //client.sendRequest('GET', '/player/foo', function(err, req, res, obj) {
+      //res.statusCode.should.equal(200);
+      //obj.code.should.equal('success');
+      //obj.player.name.should.be.ok;
+      //done();
+    //})
+    //.catch(done);
+  //});
 
-  it('should fail operations with invalid token', function(done) {
-    tokenToUse = "invalidtoken";
-    client.sendRequest('POST', '/player', {name: "notAllowed"}, function(err, req, res, obj) {
-      res.statusCode.should.equal(403);
-      obj.code.should.equal('ForbiddenError');
-      done();
-    })
-    .catch(done);
-  });
+  //it('should fail operations with invalid token', function(done) {
+    //tokenToUse = "invalidtoken";
+    //client.sendRequest('POST', '/player', {name: "notAllowed"}, function(err, req, res, obj) {
+      //res.statusCode.should.equal(403);
+      //obj.code.should.equal('ForbiddenError');
+      //done();
+    //})
+    //.catch(done);
+  //});
 
-  it('should fail admin operations without token', function(done) {
-    client.sendRequest('POST', '/player', {name: "notAllowed"}, function(err, req, res, obj) {
-      res.statusCode.should.equal(403);
-      obj.code.should.equal('ForbiddenError');
-      done();
-    })
-    .catch(done);
-  });
+  //it('should fail admin operations without token', function(done) {
+    //client.sendRequest('POST', '/player', {name: "notAllowed"}, function(err, req, res, obj) {
+      //res.statusCode.should.equal(403);
+      //obj.code.should.equal('ForbiddenError');
+      //done();
+    //})
+    //.catch(done);
+  //});
 
-  it('should succeed admin operations', function(done) {
-    tokenToUse = adminToken;
-    client.sendRequest('POST', '/player', {name: "adminCreatedMe"}, function(err, req, res, obj) {
-      res.statusCode.should.equal(200);
-      obj.code.should.equal('success');
-      done();
-    })
-    .catch(done);
-  });
-});
+  //it('should succeed admin operations', function(done) {
+    //tokenToUse = adminToken;
+    //client.sendRequest('POST', '/player', {name: "adminCreatedMe"}, function(err, req, res, obj) {
+      //res.statusCode.should.equal(200);
+      //obj.code.should.equal('success');
+      //done();
+    //})
+    //.catch(done);
+  //});
+//});
 
-describe("Games", function () {
-  var testGame = {
-    series: TESTSERIES,
-    teamAway: "VAN",
-    teamHome: "MTL",
-    goalsAway: 42,
-    goalsHome: 1,
-    playersAway: "foo,baz",
-    playersHome: "bar",
-  };
-  var gameId;
+//describe("Games", function () {
+  //var testGame = {
+    //series: TESTSERIES,
+    //teamAway: "VAN",
+    //teamHome: "MTL",
+    //goalsAway: 42,
+    //goalsHome: 1,
+    //playersAway: "foo,baz",
+    //playersHome: "bar",
+  //};
+  //var gameId;
 
-  before(function (done) {
+  //before(function (done) {
 
-    client.postAsync('/series', {name: TESTSERIES})
-      .then(function () {
-        var promises = [];
-        _.forEach(TESTPLAYERS, function (name) {
-          promises.push(client.sendRequest('POST', '/player', {name: name, series: TESTSERIES}));
-        });
-        return Promise.all(promises);
-      })
-      .then(function () {
-        done();
-      })
-      .catch(done);
-  });
+    //client.postAsync('/series', {name: TESTSERIES})
+      //.then(function () {
+        //var promises = [];
+        //_.forEach(TESTPLAYERS, function (name) {
+          //promises.push(client.sendRequest('POST', '/player', {name: name, series: TESTSERIES}));
+        //});
+        //return Promise.all(promises);
+      //})
+      //.then(function () {
+        //done();
+      //})
+      //.catch(done);
+  //});
 
-  it('should create game', function (done) {
-    client.postAsync('/game', testGame)
-      .then(function (result) {
-        var req = result[0],
-          res = result[1],
-          obj = result[2];
-        obj.code.should.equal('success');
-        gameId = obj.game;
-        done();
-      })
-      .catch(done);
-  });
+  //it('should create game', function (done) {
+    //client.postAsync('/game', testGame)
+      //.then(function (result) {
+        //var req = result[0],
+          //res = result[1],
+          //obj = result[2];
+        //obj.code.should.equal('success');
+        //gameId = obj.game;
+        //done();
+      //})
+      //.catch(done);
+  //});
 
-  it('should get game', function (done) {
-    assert(gameId);
-    client.getAsync('/game/' + gameId)
-      .then(function (result) {
-        var req = result[0],
-          res = result[1],
-          obj = result[2];
-        obj.code.should.equal('success');
-        obj.game.id.should.equal(gameId);
-        obj.game.goalsAway.should.equal(testGame.goalsAway);
-        obj.game.series.should.equal(TESTSERIES);
-        done();
-      })
-      .catch(done);
-  });
+  //it('should get game', function (done) {
+    //assert(gameId);
+    //client.getAsync('/game/' + gameId)
+      //.then(function (result) {
+        //var req = result[0],
+          //res = result[1],
+          //obj = result[2];
+        //obj.code.should.equal('success');
+        //obj.game.id.should.equal(gameId);
+        //obj.game.goalsAway.should.equal(testGame.goalsAway);
+        //obj.game.series.should.equal(TESTSERIES);
+        //done();
+      //})
+      //.catch(done);
+  //});
 
-  it('should update game', function (done) {
-    assert(gameId);
-    var updatedGame = testGame;
-    updatedGame.game = gameId;
-    updatedGame.goalsAway = 0;
+  //it('should update game', function (done) {
+    //assert(gameId);
+    //var updatedGame = testGame;
+    //updatedGame.game = gameId;
+    //updatedGame.goalsAway = 0;
 
-    client.postAsync('/game', updatedGame)
-      .then(function (result) {
-        var req = result[0],
-          res = result[1],
-          obj = result[2];
-        obj.code.should.equal('success');
-        obj.game.should.equal(gameId);
-        return client.getAsync('/game/' + gameId);
-      })
-      .then(function (result) {
-        // Updated game should have correct data
-        var req = result[0],
-          res = result[1],
-          obj = result[2];
-        obj.game.goalsAway.should.equal(0);
-        obj.game.playersAway.should.be.instanceof(Array).and.have.lengthOf(2);
-        _.difference(obj.game.playersAway, ["foo", "baz"]).should.have.lengthOf(0);
-        obj.game.series.should.equal(TESTSERIES);
-        obj.game.winners.should.be.instanceof(Array).and.have.lengthOf(1);
-        obj.game.winners[0].should.equal('bar');
-        done();
-      })
-      .catch(done);
-  });
+    //client.postAsync('/game', updatedGame)
+      //.then(function (result) {
+        //var req = result[0],
+          //res = result[1],
+          //obj = result[2];
+        //obj.code.should.equal('success');
+        //obj.game.should.equal(gameId);
+        //return client.getAsync('/game/' + gameId);
+      //})
+      //.then(function (result) {
+        //// Updated game should have correct data
+        //var req = result[0],
+          //res = result[1],
+          //obj = result[2];
+        //obj.game.goalsAway.should.equal(0);
+        //obj.game.playersAway.should.be.instanceof(Array).and.have.lengthOf(2);
+        //_.difference(obj.game.playersAway, ["foo", "baz"]).should.have.lengthOf(0);
+        //obj.game.series.should.equal(TESTSERIES);
+        //obj.game.winners.should.be.instanceof(Array).and.have.lengthOf(1);
+        //obj.game.winners[0].should.equal('bar');
+        //done();
+      //})
+      //.catch(done);
+  //});
 
-  it('player should have updated stats', function(done) {
-    client.getAsync('/player/' + TESTPLAYERS[1])
-      .then(function (result) {
-        var obj = result[2];
-        obj.code.should.equal('success');
-        obj.player.name.should.equal(TESTPLAYERS[1]);
-        obj.player.stats.numberOfGames.should.equal(1);
-        obj.player.stats.numberOfWins.should.equal(1);
-        obj.player.stats.currentStreak.should.equal(1);
-        done();
-      })
-      .catch(done);
-  });
+  //it('player should have updated stats', function(done) {
+    //client.getAsync('/player/' + TESTPLAYERS[1])
+      //.then(function (result) {
+        //var obj = result[2];
+        //obj.code.should.equal('success');
+        //obj.player.name.should.equal(TESTPLAYERS[1]);
+        //obj.player.stats.numberOfGames.should.equal(1);
+        //obj.player.stats.numberOfWins.should.equal(1);
+        //obj.player.stats.currentStreak.should.equal(1);
+        //done();
+      //})
+      //.catch(done);
+  //});
 
-  it('should get series', function(done) {
-    client.getAsync('/series/' +  TESTSERIES, function(err, req, res, obj) {
-      assert.ifError(err);
-      obj.code.should.equal('success');
-      obj.series.name.should.equal(TESTSERIES);
-      obj.series.players.should.be.instanceof(Array).and.have.length(3);
-      var findPlayer = function (players, name) {
-        return _.find(obj.series.players, function (p) {
-          return p.name === name;
-        });
-      };
-      findPlayer(obj.series.players, "foo").stats.numberOfWins.should.equal(0);
-      findPlayer(obj.series.players, "bar").stats.numberOfWins.should.equal(1);
-      done();
-    })
-    .catch(done);
-  });
-});
+  //it('should get series', function(done) {
+    //client.getAsync('/series/' +  TESTSERIES, function(err, req, res, obj) {
+      //assert.ifError(err);
+      //obj.code.should.equal('success');
+      //obj.series.name.should.equal(TESTSERIES);
+      //obj.series.players.should.be.instanceof(Array).and.have.length(3);
+      //var findPlayer = function (players, name) {
+        //return _.find(obj.series.players, function (p) {
+          //return p.name === name;
+        //});
+      //};
+      //findPlayer(obj.series.players, "foo").stats.numberOfWins.should.equal(0);
+      //findPlayer(obj.series.players, "bar").stats.numberOfWins.should.equal(1);
+      //done();
+    //})
+    //.catch(done);
+  //});
+//});
