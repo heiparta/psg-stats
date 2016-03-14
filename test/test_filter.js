@@ -9,7 +9,7 @@ var _ = require('lodash');
 
 var models = require('../lib/models');
 
-describe.only('Stats filters', function() {
+describe('Stats filters', function() {
   it('should return correct date filter', function(done) {
     var tests = [
       {date: new Date(2016, 2, 1, 21, 26, 22), days: 1, expected: new Date(2016, 2, 1)},
